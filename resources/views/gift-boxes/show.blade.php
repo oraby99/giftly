@@ -4,7 +4,7 @@
 @section('meta_description', Str::limit(strip_tags($giftBox->description ?? ''), 155))
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" x-data="{ showBoxPopup: true, showContents: true, quantity: 1, added: false }">
 
     {{-- Breadcrumb --}}
     <nav class="flex items-center gap-2 text-sm text-gray-400 mb-8">
@@ -15,7 +15,211 @@
         <span class="text-gray-600">{{ $giftBox->name }}</span>
     </nav>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16" x-data="{ quantity: 1, added: false }">
+    {{-- Big Custom Gift Box Popup Modal --}}
+    <div x-show="showBoxPopup"
+         x-cloak
+         @keydown.escape.window="showBoxPopup = false"
+         class="fixed inset-0 z-50 overflow-y-auto"
+         aria-labelledby="modal-title"
+         role="dialog"
+         aria-modal="true">
+        
+        {{-- Backdrop --}}
+        <div x-show="showBoxPopup"
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click="showBoxPopup = false"
+             class="fixed inset-0 bg-stone-900/70 backdrop-blur-sm transition-opacity"></div>
+
+        {{-- Modal Dialog --}}
+        <div class="flex min-h-full items-center justify-center p-3 sm:p-6 lg:p-8">
+            <div x-show="showBoxPopup"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave="ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 @click.stop
+                 class="relative transform overflow-hidden rounded-3xl bg-white text-right shadow-2xl transition-all w-full max-w-4xl border border-pink-100">
+
+                <div class="grid grid-cols-1 md:grid-cols-12 max-h-[88vh] overflow-y-auto">
+                    {{-- Image Column --}}
+                    <div class="md:col-span-5 bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 p-6 flex flex-col justify-between items-center relative min-h-[300px] md:min-h-[480px]">
+                        <div class="w-full pr-12">
+                            <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-pink-700 bg-white/80 shadow-sm border border-pink-200">
+                                🎁 بوكس هدايا مخصص
+                            </span>
+                        </div>
+
+                        <div class="w-full my-auto py-4">
+                            @if($giftBox->image)
+                            <img src="{{ Storage::url($giftBox->image) }}"
+                                 alt="{{ $giftBox->name }}"
+                                 class="w-full max-h-72 md:max-h-80 object-cover rounded-2xl shadow-xl ring-4 ring-white/60 mx-auto">
+                            @else
+                            <div class="w-48 h-48 rounded-2xl bg-white/80 flex items-center justify-center text-7xl shadow-lg mx-auto">
+                                🎁
+                            </div>
+                            @endif
+                        </div>
+
+                        <div class="w-full bg-white/90 backdrop-blur-sm rounded-2xl p-4 text-center border border-pink-100 shadow-sm">
+                            <div class="text-xs text-gray-500 font-medium mb-1">سعر البوكس المخصص</div>
+                            <div class="text-2xl font-black text-pink-600 font-mono">
+                                {{ number_format($giftBox->price, 2) }} ج.م
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Content Column --}}
+                    <div class="md:col-span-7 p-6 sm:p-8 flex flex-col justify-between space-y-5">
+                        <div>
+                            {{-- Header Title & Subtitle --}}
+                            <div class="mb-4">
+                                <h2 class="text-2xl sm:text-3xl font-black text-gray-900 mb-2 flex items-center gap-2">
+                                    <span>{{ $giftBox->name }}</span>
+                                </h2>
+                                <p class="text-base sm:text-lg font-bold text-pink-600 leading-snug">
+                                    مش كل الكلام بيتقال... بعض الكلام بيتحط في بوكس.
+                                </p>
+                                <p class="text-sm text-gray-600 mt-1 leading-relaxed">
+                                    صوركم، رسائلكم، وذكرياتكم في هدية واحدة مخصصة ليها.
+                                </p>
+                            </div>
+
+                            {{-- Conversational Card --}}
+                            <div class="bg-gradient-to-r from-pink-50/80 to-rose-50/50 rounded-2xl p-4 border border-pink-200/60 mb-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="text-2xl">💌</div>
+                                    <div class="text-sm text-gray-800 leading-relaxed font-medium">
+                                        <p class="font-bold text-pink-700 mb-1">أهلاً بيك ❤️</p>
+                                        <p>بوكس «{{ $boxDisplayName }}» بيتعمل مخصوص للشخص اللي هتهديهوله، وبيضم صوركم ورسائلكم بطريقة شخصية جدًا.</p>
+                                        <div class="mt-2.5 flex items-center justify-between">
+                                            <span class="text-xs text-gray-500 font-bold">تحب تشوف محتويات البوكس والأسعار؟ 🎁</span>
+                                            <button type="button"
+                                                    @click="showContents = !showContents"
+                                                    class="text-xs bg-white text-pink-600 border border-pink-300 font-bold px-3 py-1.5 rounded-lg shadow-sm hover:bg-pink-600 hover:text-white transition-all flex items-center gap-1">
+                                                <span x-text="showContents ? 'إخفاء' : 'أيوه، اعرضلي'"></span>
+                                                <span x-text="showContents ? '▲' : '▼'"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Collapsible Contents List --}}
+                            <div x-show="showContents"
+                                 x-collapse
+                                 class="space-y-4 mb-4">
+                                <div class="bg-gray-50/80 rounded-2xl p-4 border border-gray-200/80">
+                                    <h4 class="font-bold text-sm text-gray-900 mb-3 flex items-center gap-2">
+                                        <span>✨ محتويات البوكس:</span>
+                                    </h4>
+                                    <ul class="space-y-2 text-sm text-gray-700">
+                                        @if($giftBox->items->isNotEmpty())
+                                            @foreach($giftBox->items as $index => $item)
+                                            <li class="flex items-center gap-2.5">
+                                                <span class="w-5 h-5 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-xs font-bold shrink-0">
+                                                    {{ $index + 1 }}
+                                                </span>
+                                                <span class="font-medium text-gray-800">{{ $item->product?->name }}</span>
+                                            </li>
+                                            @endforeach
+                                        @else
+                                            <li class="flex items-center gap-2.5">
+                                                <span class="w-5 h-5 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-xs font-bold shrink-0">1</span>
+                                                <span class="font-medium text-gray-800">رسالة من قلبي ليك</span>
+                                            </li>
+                                            <li class="flex items-center gap-2.5">
+                                                <span class="w-5 h-5 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-xs font-bold shrink-0">2</span>
+                                                <span class="font-medium text-gray-800">برطمان مواقف ورسائل صغيرة بتقول كتير</span>
+                                            </li>
+                                            <li class="flex items-center gap-2.5">
+                                                <span class="w-5 h-5 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-xs font-bold shrink-0">3</span>
+                                                <span class="font-medium text-gray-800">برواز ذكرياتنا الحلوة لطباعة الصور</span>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                </div>
+
+                                {{-- What we need to prepare the box --}}
+                                <div class="bg-amber-50/60 rounded-2xl p-4 border border-amber-200/60 text-sm space-y-2.5">
+                                    <div class="font-bold text-amber-900 text-xs sm:text-sm">
+                                        + عشان نبدأ نجهز بوكس «{{ $boxDisplayName }}» بتفاصيله الخاصة بيكم، محتاجين منك:
+                                    </div>
+                                    <div class="space-y-1.5 text-xs sm:text-sm text-gray-700">
+                                        <div class="flex items-start gap-2">
+                                            <span class="shrink-0 text-base">📸</span>
+                                            <span><strong>الصور:</strong> من 5 إلى 10 صور تحب تضيفها للبوكس.</span>
+                                        </div>
+                                        <div class="flex items-start gap-2">
+                                            <span class="shrink-0 text-base">💌</span>
+                                            <span><strong>الرسائل:</strong> ابعتلنا الرسائل اللي حابب نحطها، سواء رسالة واحدة طويلة أو أكتر من رسالة قصيرة وممكن نساعدك لو حتى الكلام اللي هتقوله مش مرتب ♥️</span>
+                                        </div>
+                                        <div class="flex items-start gap-2">
+                                            <span class="shrink-0 text-base">🎁</span>
+                                            <span><strong>طلبات خاصة:</strong> ولو عندك أي طلب خاص في التصميم أو ترتيب الصور والرسائل، اكتبهولنا.</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-rose-800 font-medium pt-1">
+                                        ممكن تبعت الصور والرسائل هنا على الواتساب مباشرة، وإحنا هنرتبهم ونجهز التصميم ليك ❤️
+                                    </p>
+                                    <div class="pt-2 border-t border-amber-200/40 text-xs text-amber-800 font-semibold flex items-center gap-1.5">
+                                        <span>💡 ملحوظة:</span>
+                                        <span>يفضل إرسال الصور بجودتها الأصلية عشان نطلعها بأفضل جودة ممكنة.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Action Buttons --}}
+                        <div class="pt-3 border-t border-gray-100 space-y-2.5">
+                            <a href="{{ $whatsappUrl }}"
+                               target="_blank"
+                               style="background-color: #25D366 !important; color: #ffffff !important;"
+                               class="w-full text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:opacity-95 transition-all duration-200 text-lg group">
+                                <svg width="26" height="26" viewBox="0 0 24 24" style="width: 26px !important; height: 26px !important; min-width: 26px !important; max-width: 26px !important; fill: #ffffff !important; display: inline-block;">
+                                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.275.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.164.577 4.246 1.636 6.071l-1.636 5.929 6.071-1.636c1.782.977 3.82 1.547 5.929 1.547 6.627 0 12-5.373 12-12s-5.373-12-12-12z"/>
+                                </svg>
+                                <span style="color: #ffffff !important;">اطلب بوكسك ❤️</span>
+                            </a>
+
+                            <div class="flex items-center justify-between text-xs text-gray-500 pt-1">
+                                <span class="flex items-center gap-1">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    متاح للتجهيز الفوري والشحن
+                                </span>
+                                <button type="button" @click="showBoxPopup = false" class="text-pink-600 hover:underline font-bold">
+                                    تصفح تفاصيل الصفحة ←
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Prominent Close Button (Top-Right) --}}
+                <button type="button"
+                        @click.stop="showBoxPopup = false"
+                        style="position: absolute; top: 14px; right: 14px; z-index: 99999 !important; width: 40px; height: 40px; border-radius: 9999px; background: #ffffff; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2); border: 1px solid rgba(0, 0, 0, 0.12); display: flex; align-items: center; justify-content: center; cursor: pointer !important; pointer-events: auto !important;"
+                        class="hover:bg-pink-50 hover:scale-105 active:scale-95 transition-all text-gray-700 hover:text-gray-900"
+                        title="إغلاق النافذة"
+                        aria-label="إغلاق النافذة">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1f2937" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; pointer-events: none;">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- Main Page Grid --}}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
 
         {{-- Image --}}
         <div class="relative rounded-3xl overflow-hidden shadow-xl h-96 lg:h-[480px]"
@@ -62,8 +266,21 @@
             <div class="text-gray-600 leading-relaxed mb-6">{{ $giftBox->description }}</div>
             @endif
 
+            {{-- Open Popup CTA Button Banner --}}
+            <div class="mb-6 p-4 rounded-2xl bg-gradient-to-r from-pink-50 to-rose-50 border border-pink-200 flex items-center justify-between gap-4">
+                <div>
+                    <div class="font-bold text-sm text-gray-900">تريد رؤية تفاصيل وكيفية تجهيز البوكس؟</div>
+                    <div class="text-xs text-gray-500">شاهد المحتويات وتعليمات إرسال الصور والرسائل</div>
+                </div>
+                <button type="button"
+                        @click="showBoxPopup = true"
+                        class="btn-primary py-2 px-4 text-xs font-bold shrink-0">
+                    🎁 فتح نافذة التفاصيل
+                </button>
+            </div>
+
             {{-- Quantity & Cart --}}
-            <div class="flex items-center gap-4 mb-6">
+            <div class="flex items-center gap-4 mb-4">
                 <div class="flex items-center border-2 border-blush-200 rounded-xl overflow-hidden">
                     <button @click="quantity = Math.max(1, quantity - 1)"
                             class="px-4 py-3 text-lg font-bold hover:bg-blush-100 transition-colors">−</button>
@@ -84,8 +301,19 @@
                 </button>
             </div>
 
-            <a href="{{ route('cart') }}" class="btn-secondary w-full justify-center py-3">
-                🛒 إتمام الطلب عبر واتساب
+            {{-- Direct WhatsApp Button --}}
+            <a href="{{ $whatsappUrl }}"
+               target="_blank"
+               style="background-color: #25D366 !important; color: #ffffff !important;"
+               class="w-full text-white font-bold py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2.5 shadow-md hover:shadow-lg hover:opacity-95 transition-all duration-200 text-base mb-3">
+                <svg width="22" height="22" viewBox="0 0 24 24" style="width: 22px !important; height: 22px !important; min-width: 22px !important; max-width: 22px !important; fill: #ffffff !important; display: inline-block;">
+                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.275.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.164.577 4.246 1.636 6.071l-1.636 5.929 6.071-1.636c1.782.977 3.82 1.547 5.929 1.547 6.627 0 12-5.373 12-12s-5.373-12-12-12z"/>
+                </svg>
+                <span style="color: #ffffff !important;">الطلب المباشر عبر واتساب</span>
+            </a>
+
+            <a href="{{ route('cart') }}" class="btn-secondary w-full justify-center py-3 text-sm">
+                الانتقال إلى سلة المشتريات ←
             </a>
         </div>
     </div>

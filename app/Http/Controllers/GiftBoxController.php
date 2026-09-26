@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\GiftBox;
 use App\Models\Occasion;
+use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 
 class GiftBoxController extends Controller
 {
+    public function __construct(
+        private readonly WhatsAppService $whatsApp,
+    ) {}
     public function index(Request $request)
     {
         $query = GiftBox::active()
@@ -64,6 +68,13 @@ class GiftBoxController extends Controller
             ->limit(4)
             ->get();
 
-        return view('gift-boxes.show', compact('giftBox', 'related'));
+        $boxDisplayName = trim(str_replace(['بوكس', 'صندوق', '❤️', '«', '»'], '', $giftBox->name));
+        if (empty($boxDisplayName)) {
+            $boxDisplayName = $giftBox->name;
+        }
+
+        $whatsappUrl = $this->whatsApp->generateGiftBoxUrl($giftBox, $boxDisplayName);
+
+        return view('gift-boxes.show', compact('giftBox', 'related', 'whatsappUrl', 'boxDisplayName'));
     }
 }

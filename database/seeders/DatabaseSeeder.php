@@ -52,8 +52,8 @@ class DatabaseSeeder extends Seeder
         // 2. Settings
         $settings = [
             'store_name' => 'جيفتلي - متجر الهدايا الفاخرة',
-            'whatsapp_number' => '201012345678',
-            'store_phone' => '+20 100 000 0000',
+            'whatsapp_number' => '201112126939',
+            'store_phone' => '+20 11 1212 6939',
             'store_email' => 'info@giftly.eg',
             'store_currency' => 'ج.م',
             'delivery_note' => 'التوصيل متاح لجميع محافظات جمهورية مصر العربية خلال 24 - 48 ساعة.',

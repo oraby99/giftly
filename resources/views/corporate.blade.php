@@ -22,7 +22,7 @@
                 <a href="#inquiry-form" class="btn-primary text-sm sm:text-base py-3 px-8 shadow-md">
                     <span>📝 طلب عرض أسعار مخصص</span>
                 </a>
-                <a href="https://wa.me/201000000000?text={{ rawurlencode('مرحباً، أود الاستفسار عن باقات هدايا الشركات من جيفتلي') }}"
+                <a href="https://wa.me/201112126939?text={{ rawurlencode('مرحباً، أود الاستفسار عن باقات هدايا الشركات من جيفتلي') }}"
                    target="_blank"
                    class="btn-secondary text-sm sm:text-base py-3 px-6 flex items-center gap-2">
                     <span class="text-green-600">💬</span>

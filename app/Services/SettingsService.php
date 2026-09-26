@@ -28,7 +28,14 @@ class SettingsService
 
     public function whatsappNumber(): string
     {
-        return $this->get('whatsapp_number', '');
+        $num = $this->get('whatsapp_number');
+        if (empty($num) || $num === '201012345678' || $num === '201000000000') {
+            $this->set('whatsapp_number', '201112126939');
+
+            return '201112126939';
+        }
+
+        return $num;
     }
 
     public function storeName(): string

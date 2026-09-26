@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\ItemType;
+use App\Models\GiftBox;
 use App\Models\Order;
 
 class WhatsAppService
@@ -14,6 +15,54 @@ class WhatsAppService
     public function generateUrl(Order $order): string
     {
         $message = $this->buildMessage($order);
+        $number = preg_replace('/[^0-9]/', '', $this->settings->whatsappNumber());
+
+        return 'https://wa.me/'.$number.'?text='.rawurlencode($message);
+    }
+
+    public function generateGiftBoxUrl(GiftBox $giftBox, ?string $boxDisplayName = null): string
+    {
+        $cleanName = $boxDisplayName ?: trim(str_replace(['بوكس', 'صندوق', '❤️', '«', '»'], '', $giftBox->name));
+        if (empty($cleanName)) {
+            $cleanName = $giftBox->name;
+        }
+
+        $lines = [];
+        $lines[] = 'أهلاً بيك ❤️';
+        $lines[] = "بوكس «{$cleanName}» بيتعمل مخصوص للشخص اللي هتهديهوله، وبيضم صوركم ورسائلكم بطريقة شخصية جدًا.";
+        $lines[] = 'تحب أشوفك محتويات البوكس والأسعار؟ 🎁';
+        $lines[] = 'أيوه، حابب أعرف محتويات البوكس والأسعار ✨';
+        $lines[] = '';
+        $lines[] = '📦 *محتويات البوكس:*';
+
+        if ($giftBox->items->isNotEmpty()) {
+            foreach ($giftBox->items as $index => $item) {
+                $num = $index + 1;
+                $lines[] = "{$num}. {$item->product?->name}";
+            }
+        } else {
+            $lines[] = '1. رسالة من قلبي ليك';
+            $lines[] = '2. برطمان مواقف ورسائل صغيرة بتقول كتير';
+            $lines[] = '3. برواز ذكرياتنا الحلوة لطباعة الصور';
+            $lines[] = '4. مج مخصص وكارت إهداء';
+        }
+
+        $lines[] = '';
+        $lines[] = '💰 *السعر:* '.number_format((float) $giftBox->price, 2).' ج.م';
+        $lines[] = '';
+        $lines[] = "+ عشان نبدأ نجهز بوكس «{$cleanName}» بتفاصيله الخاصة بيكم، محتاجين منك:";
+        $lines[] = '';
+        $lines[] = '📸 *الصور:* من 5 إلى 10 صور تحب تضيفها للبوكس.';
+        $lines[] = '';
+        $lines[] = '💌 *الرسائل:* ابعتلنا الرسائل اللي حابب نحطها، سواء رسالة واحدة طويلة أو أكتر من رسالة قصيرة وممكن نساعدك لو حتي الكلام اللي هتقوله مش مرتب ♥️';
+        $lines[] = '';
+        $lines[] = '🎁 ولو عندك أي طلب خاص في التصميم أو ترتيب الصور والرسائل، اكتبهولنا.';
+        $lines[] = '';
+        $lines[] = 'ممكن تبعت الصور والرسائل هنا على الواتساب مباشرة، وإحنا هنرتبهم ونجهز التصميم ليك ❤️';
+        $lines[] = '';
+        $lines[] = 'ملحوظة: يفضل إرسال الصور بجودتها الأصلية عشان نطلعها بأفضل جودة ممكنة.';
+
+        $message = implode("\n", $lines);
         $number = preg_replace('/[^0-9]/', '', $this->settings->whatsappNumber());
 
         return 'https://wa.me/'.$number.'?text='.rawurlencode($message);

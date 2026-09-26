@@ -340,7 +340,7 @@
 </section>
 
 {{-- Testimonials --}}
-<section class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" x-data="{ openReviewModal: false }">
+<section id="customer-reviews" class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-20" x-data="{ openReviewModal: false }">
     <div class="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
         <div class="text-center sm:text-right">
             <h2 class="text-2xl sm:text-3xl font-black text-gray-900">ماذا يقول عملاؤنا</h2>

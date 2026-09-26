@@ -60,6 +60,7 @@
                     <a href="{{ route('products.index') }}" class="nav-link text-sm {{ request()->routeIs('products.*') ? 'text-brand-600 font-bold' : '' }}">المنتجات</a>
                     <a href="{{ route('custom-box-builder') }}" class="nav-link text-sm {{ request()->routeIs('custom-box-builder') ? 'text-brand-600 font-bold' : '' }}">اصنع صندوقك ✨</a>
                     <a href="{{ route('corporate.index') }}" class="nav-link text-sm {{ request()->routeIs('corporate.*') ? 'text-brand-600 font-bold' : '' }}">هدايا الشركات</a>
+                    <a href="{{ route('home') }}#customer-reviews" class="nav-link text-sm hover:text-brand-600">آراء العملاء</a>
                 </nav>
 
                 {{-- Actions: Favorites, Cart & Mobile Menu Toggle --}}
@@ -147,6 +148,11 @@
                        class="px-3 py-2.5 rounded-xl hover:bg-brand-50 hover:text-brand-600 flex items-center gap-2 {{ request()->routeIs('corporate.*') ? 'bg-brand-50 text-brand-600' : 'text-gray-700' }}">
                         <span>🏢</span> هدايا الشركات
                     </a>
+                    <a href="{{ route('home') }}#customer-reviews"
+                       @click="mobileMenuOpen = false"
+                       class="px-3 py-2.5 rounded-xl hover:bg-brand-50 hover:text-brand-600 flex items-center gap-2 text-gray-700">
+                        <span>⭐</span> آراء العملاء
+                    </a>
                     <a href="{{ route('favorites') }}"
                        @click="mobileMenuOpen = false"
                        class="px-3 py-2.5 rounded-xl hover:bg-brand-50 hover:text-brand-600 flex items-center gap-2 {{ request()->routeIs('favorites') ? 'bg-brand-50 text-brand-600' : 'text-gray-700' }}">
@@ -166,7 +172,7 @@
 
                 <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
                     <span>تحتاج مساعدة فورية؟</span>
-                    <a href="https://wa.me/201000000000" target="_blank" class="text-green-600 font-bold flex items-center gap-1 hover:underline">
+                    <a href="https://wa.me/201112126939" target="_blank" class="text-green-600 font-bold flex items-center gap-1 hover:underline">
                         <span>💬</span> واتساب خدمة العملاء
                     </a>
                 </div>
@@ -266,6 +272,7 @@
                         <li><a href="{{ route('products.index') }}" class="hover:text-white transition-colors">المنتجات</a></li>
                         <li><a href="{{ route('custom-box-builder') }}" class="hover:text-white transition-colors">اصنع صندوقك</a></li>
                         <li><a href="{{ route('corporate.index') }}" class="hover:text-white transition-colors">هدايا الشركات</a></li>
+                        <li><a href="{{ route('home') }}#customer-reviews" class="hover:text-white transition-colors">آراء العملاء</a></li>
                         <li><a href="{{ route('about') }}" class="hover:text-white transition-colors">من نحن</a></li>
                         <li><a href="{{ route('contact') }}" class="hover:text-white transition-colors">تواصل معنا</a></li>
                     </ul>
@@ -278,9 +285,9 @@
                             <span>📍</span> القاهرة، مصر
                         </p>
                         <p class="flex items-center gap-2">
-                            <span>📞</span> +20 100 000 0000
+                            <span>📞</span> <a href="tel:+201112126939" class="hover:text-white transition-colors" dir="ltr">+20 11 1212 6939</a>
                         </p>
-                        <a href="#" class="flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors">
+                        <a href="https://wa.me/201112126939" target="_blank" class="flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors">
                             <span>💬</span> واتساب
                         </a>
                     </div>

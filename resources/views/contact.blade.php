@@ -32,7 +32,7 @@
                 <h3 class="font-bold text-gray-900 text-base mb-1">واتساب المباشر</h3>
                 <p class="text-xs text-gray-500 mb-4">أسرع وسيلة للتواصل وتأكيد الطلبات وتخصيص الصناديق</p>
             </div>
-            <a href="https://wa.me/201000000000?text={{ rawurlencode('مرحباً، لدي استفسار بخصوص متجر جيفتلي') }}"
+            <a href="https://wa.me/201112126939?text={{ rawurlencode('مرحباً، لدي استفسار بخصوص متجر جيفتلي') }}"
                target="_blank"
                class="btn-primary text-xs py-2.5 w-full justify-center"
                style="background: linear-gradient(135deg, #25D366, #128C7E)">
@@ -50,10 +50,10 @@
                 <h3 class="font-bold text-gray-900 text-base mb-1">الاتصال الهاتفي</h3>
                 <p class="text-xs text-gray-500 mb-4">متاح يومياً من 10 صباحاً حتى 10 مساءً</p>
             </div>
-            <a href="tel:+201000000000"
+            <a href="tel:+201112126939"
                class="btn-secondary text-xs py-2.5 w-full justify-center font-bold"
                dir="ltr">
-                +20 100 000 0000
+                +20 11 1212 6939
             </a>
         </div>
 
