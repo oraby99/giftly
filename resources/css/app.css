@@ -1,9 +1,212 @@
 @import 'tailwindcss';
 
+@source '../views/**/*.blade.php';
+@source '../js/**/*.js';
+@source '../../app/**/*.php';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Cairo', 'Noto Kufi Arabic', ui-sans-serif, system-ui, sans-serif;
+
+    --color-brand-50: oklch(0.975 0.015 345);
+    --color-brand-100: oklch(0.948 0.032 345);
+    --color-brand-200: oklch(0.893 0.062 345);
+    --color-brand-300: oklch(0.822 0.095 345);
+    --color-brand-400: oklch(0.742 0.130 345);
+    --color-brand-500: oklch(0.660 0.157 345);
+    --color-brand-600: oklch(0.580 0.165 345);
+    --color-brand-700: oklch(0.490 0.155 345);
+    --color-brand-800: oklch(0.400 0.130 345);
+    --color-brand-900: oklch(0.320 0.100 345);
+
+    --color-blush-50: oklch(0.985 0.007 350);
+    --color-blush-100: oklch(0.965 0.018 350);
+    --color-blush-200: oklch(0.930 0.038 350);
+
+    --color-rose-gold: oklch(0.72 0.08 20);
+
+    --radius-card: 1.25rem;
+    --radius-btn: 0.75rem;
+
+    --shadow-card: 0 4px 24px -4px oklch(0.66 0.157 345 / 0.12);
+    --shadow-card-hover: 0 8px 32px -4px oklch(0.66 0.157 345 / 0.22);
+}
+
+@layer base {
+    html {
+        direction: rtl;
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: var(--font-sans);
+        background-color: var(--color-blush-50);
+        color: oklch(0.22 0.01 280);
+        -webkit-font-smoothing: antialiased;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+}
+
+@layer components {
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.75rem;
+        background: linear-gradient(135deg, var(--color-brand-500), var(--color-brand-600));
+        color: white;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        border-radius: var(--radius-btn);
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        box-shadow: 0 2px 12px -2px var(--color-brand-400);
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, var(--color-brand-600), var(--color-brand-700));
+        box-shadow: 0 4px 16px -2px var(--color-brand-500);
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.75rem;
+        background: white;
+        color: var(--color-brand-600);
+        font-weight: 600;
+        font-size: 0.9375rem;
+        border-radius: var(--radius-btn);
+        border: 2px solid var(--color-brand-200);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
+    .btn-secondary:hover {
+        background: var(--color-brand-50);
+        border-color: var(--color-brand-400);
+        transform: translateY(-1px);
+    }
+
+    .card {
+        background: white;
+        border-radius: var(--radius-card);
+        box-shadow: var(--shadow-card);
+        border: 1px solid var(--color-blush-200);
+        overflow: hidden;
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .card:hover {
+        box-shadow: var(--shadow-card-hover);
+        transform: translateY(-2px);
+    }
+
+    .section-title {
+        font-size: 1.875rem;
+        font-weight: 800;
+        color: oklch(0.22 0.01 280);
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .section-subtitle {
+        font-size: 1rem;
+        color: oklch(0.55 0.02 280);
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .badge-price {
+        background: linear-gradient(135deg, var(--color-brand-500), var(--color-brand-600));
+        color: white;
+        padding: 0.25rem 0.875rem;
+        border-radius: 9999px;
+        font-weight: 700;
+        font-size: 0.95rem;
+    }
+
+    .nav-link {
+        color: oklch(0.45 0.01 280);
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.15s;
+        padding: 0.25rem 0;
+        position: relative;
+    }
+
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 0;
+        height: 2px;
+        background: var(--color-brand-500);
+        transition: width 0.2s ease;
+    }
+
+    .nav-link:hover {
+        color: var(--color-brand-600);
+    }
+
+    .nav-link:hover::after {
+        width: 100%;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1.5px solid var(--color-blush-200);
+        border-radius: var(--radius-btn);
+        background: white;
+        font-family: var(--font-sans);
+        font-size: 0.9375rem;
+        color: oklch(0.22 0.01 280);
+        transition: border-color 0.15s, box-shadow 0.15s;
+        outline: none;
+    }
+
+    .input-field:focus {
+        border-color: var(--color-brand-400);
+        box-shadow: 0 0 0 3px oklch(0.742 0.130 345 / 0.12);
+    }
+
+    .product-card {
+        background: white;
+        border-radius: var(--radius-card);
+        overflow: hidden;
+        box-shadow: var(--shadow-card);
+        border: 1px solid var(--color-blush-200);
+        transition: box-shadow 0.2s, transform 0.2s;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-card:hover {
+        box-shadow: var(--shadow-card-hover);
+        transform: translateY(-3px);
+    }
+
+    .product-card img {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+    }
+
+    .product-card-body {
+        padding: 1rem 1.25rem 1.25rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
 }
