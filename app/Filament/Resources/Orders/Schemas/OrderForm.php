@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Orders\Schemas;
 
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -31,7 +32,7 @@ class OrderForm
                                 ->options(collect(OrderStatus::cases())->mapWithKeys(
                                     fn ($case) => [$case->value => $case->label()]
                                 ))
-                                ->default(OrderStatus::Pending->value)
+                                ->default(OrderStatus::WaitingPhotos->value)
                                 ->required(),
 
                             Select::make('order_type')
@@ -64,6 +65,41 @@ class OrderForm
                         Textarea::make('customer_notes')
                             ->label('ملاحظات العميل')
                             ->columnSpanFull(),
+                    ]),
+
+                Section::make('محتوى العميل (Customer Content)')
+                    ->description('رفع وتخزين الصور والرسائل الخاصة بالعميل لربطها مباشرة بالطلب')
+                    ->schema([
+                        FileUpload::make('customer_photos')
+                            ->label('📷 صور العميل (Photos)')
+                            ->multiple()
+                            ->image()
+                            ->reorderable()
+                            ->openable()
+                            ->downloadable()
+                            ->disk('public')
+                            ->directory('orders/photos')
+                            ->columnSpanFull()
+                            ->helperText('ارفع الصور التي أرسلها العميل عبر واتساب لربطها برقم الطلب (photo_01, photo_02...)'),
+
+                        Repeater::make('customer_messages')
+                            ->label('💌 رسائل العميل (Messages)')
+                            ->schema([
+                                TextInput::make('title')
+                                    ->label('التصنيف / المكان')
+                                    ->placeholder('مثال: كارت الإهداء، برطمان الرسائل، رسالة الغلاف...')
+                                    ->columnSpan(1),
+                                Textarea::make('message')
+                                    ->label('نص الرسالة')
+                                    ->rows(2)
+                                    ->required()
+                                    ->placeholder('اكتب نص رسالة العميل هنا...')
+                                    ->columnSpan(2),
+                            ])
+                            ->columns(3)
+                            ->addActionLabel('إضافة رسالة (Add Message)')
+                            ->columnSpanFull()
+                            ->collapsible(),
                     ]),
 
                 Section::make('التسعير')

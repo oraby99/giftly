@@ -59,13 +59,15 @@
                 {{-- Image Link --}}
                 <div class="relative aspect-square overflow-hidden bg-gray-50">
                     <template x-if="fav.image">
-                        <img :src="'/storage/' + fav.image" :alt="fav.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <img :src="typeof formatImageUrl === 'function' ? formatImageUrl(fav.image) : (fav.image.startsWith('/storage') || fav.image.startsWith('http') ? fav.image : '/storage/' + fav.image)"
+                             :alt="fav.name"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                             onerror="this.style.display='none'; if(this.parentElement.querySelector('.fav-fallback')) this.parentElement.querySelector('.fav-fallback').style.display='flex';">
                     </template>
-                    <template x-if="!fav.image">
-                        <div class="w-full h-full flex items-center justify-center text-4xl text-gray-300">
-                            🎁
-                        </div>
-                    </template>
+                    <div class="fav-fallback w-full h-full flex items-center justify-center text-4xl text-gray-300"
+                         :style="fav.image ? 'display: none;' : 'display: flex;'">
+                        🎁
+                    </div>
 
                     <span class="absolute bottom-2 right-2 badge-price text-xs" x-text="fav.price + ' ج.م'"></span>
                 </div>

@@ -192,13 +192,15 @@
                             <div>
                                 <div class="relative w-full aspect-square rounded-xl bg-gray-50 overflow-hidden mb-2.5">
                                     <template x-if="prod.image">
-                                        <img :src="'/storage/' + prod.image" :alt="prod.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                        <img :src="typeof formatImageUrl === 'function' ? formatImageUrl(prod.image) : (prod.image.startsWith('/storage') || prod.image.startsWith('http') ? prod.image : '/storage/' + prod.image)"
+                                             :alt="prod.name"
+                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                             onerror="this.style.display='none'; if(this.parentElement.querySelector('.builder-fallback')) this.parentElement.querySelector('.builder-fallback').style.display='flex';">
                                     </template>
-                                    <template x-if="!prod.image">
-                                        <div class="w-full h-full flex items-center justify-center text-3xl text-gray-300">
-                                            🎁
-                                        </div>
-                                    </template>
+                                    <div class="builder-fallback w-full h-full flex items-center justify-center text-3xl text-gray-300"
+                                         :style="prod.image ? 'display: none;' : 'display: flex;'">
+                                        🎁
+                                    </div>
                                     <span class="absolute top-2 left-2 badge-price text-[11px] px-2 py-0.5" x-text="prod.price + ' ج.م'"></span>
                                 </div>
                                 <h4 class="font-bold text-gray-900 text-xs sm:text-sm line-clamp-2 mb-1" x-text="prod.name"></h4>
@@ -367,7 +369,8 @@
                                     <div class="flex items-center gap-2.5">
                                         <div class="w-8 h-8 rounded-lg bg-gray-100 overflow-hidden flex items-center justify-center shrink-0">
                                             <template x-if="item.image">
-                                                <img :src="'/storage/' + item.image" class="w-full h-full object-cover">
+                                                <img :src="typeof formatImageUrl === 'function' ? formatImageUrl(item.image) : (item.image.startsWith('/storage') || item.image.startsWith('http') ? item.image : '/storage/' + item.image)"
+                                                     class="w-full h-full object-cover">
                                             </template>
                                             <template x-if="!item.image">
                                                 <span>🎁</span>

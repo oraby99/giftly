@@ -13,7 +13,8 @@ use Illuminate\Support\Str;
 #[Fillable([
     'order_number', 'customer_name', 'customer_phone', 'customer_address',
     'status', 'subtotal', 'packaging_cost', 'delivery_cost', 'total',
-    'customer_notes', 'order_type', 'whatsapp_opened_at',
+    'customer_notes', 'customer_photos', 'customer_messages', 'photos_received_at',
+    'order_type', 'whatsapp_opened_at',
 ])]
 class Order extends Model
 {
@@ -26,18 +27,36 @@ class Order extends Model
             'packaging_cost' => 'decimal:2',
             'delivery_cost' => 'decimal:2',
             'total' => 'decimal:2',
+            'customer_photos' => 'array',
+            'customer_messages' => 'array',
+            'photos_received_at' => 'datetime',
             'whatsapp_opened_at' => 'datetime',
         ];
+    }
+
+    public static function generateNextOrderNumber(): string
+    {
+        $latest = static::where('order_number', 'LIKE', 'WH-%')
+            ->orderByDesc('id')
+            ->first();
+
+        $next = 1025;
+        if ($latest && preg_match('/WH-(\d+)/', $latest->order_number, $matches)) {
+            $next = max(1025, ((int) $matches[1]) + 1);
+        }
+
+        while (static::where('order_number', 'WH-'.$next)->exists()) {
+            $next++;
+        }
+
+        return 'WH-'.$next;
     }
 
     protected static function booted(): void
     {
         static::creating(function (Order $order) {
             if (empty($order->order_number)) {
-                do {
-                    $number = 'GFT-'.strtoupper(Str::random(8));
-                } while (static::where('order_number', $number)->exists());
-                $order->order_number = $number;
+                $order->order_number = static::generateNextOrderNumber();
             }
 
             if ($order->subtotal === null) {
@@ -56,7 +75,7 @@ class Order extends Model
                 $order->order_type = OrderType::ReadyMade;
             }
             if ($order->status === null) {
-                $order->status = OrderStatus::Pending;
+                $order->status = OrderStatus::WaitingPhotos;
             }
         });
     }

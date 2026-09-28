@@ -4,7 +4,7 @@
 @section('meta_description', Str::limit(strip_tags($giftBox->description ?? ''), 155))
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" x-data="{ showBoxPopup: true, showContents: true, quantity: 1, added: false }">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" x-data="{ showBoxPopup: {{ request('open') ? 'true' : 'false' }}, showContents: true, quantity: 1, added: false }">
 
     {{-- Breadcrumb --}}
     <nav class="flex items-center gap-2 text-sm text-gray-400 mb-8">
@@ -179,23 +179,20 @@
 
                         {{-- Action Buttons --}}
                         <div class="pt-3 border-t border-gray-100 space-y-2.5">
-                            <a href="{{ $whatsappUrl }}"
-                               target="_blank"
-                               style="background-color: #25D366 !important; color: #ffffff !important;"
-                               class="w-full text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:opacity-95 transition-all duration-200 text-lg group">
-                                <svg width="26" height="26" viewBox="0 0 24 24" style="width: 26px !important; height: 26px !important; min-width: 26px !important; max-width: 26px !important; fill: #ffffff !important; display: inline-block;">
-                                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.275.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.164.577 4.246 1.636 6.071l-1.636 5.929 6.071-1.636c1.782.977 3.82 1.547 5.929 1.547 6.627 0 12-5.373 12-12s-5.373-12-12-12z"/>
-                                </svg>
-                                <span style="color: #ffffff !important;">اطلب بوكسك ❤️</span>
-                            </a>
+                            <button type="button"
+                                    @click="$store.cart.addGiftBox({id:{{ $giftBox->id }}, name:'{{ addslashes($giftBox->name) }}', price:{{ $giftBox->price }}, image:'{{ $giftBox->image ? Storage::url($giftBox->image) : '' }}'}, quantity); window.location.href = '{{ route('cart') }}'"
+                                    class="w-full btn-primary font-bold py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2.5 shadow-lg hover:shadow-xl transition-all duration-200 text-base sm:text-lg group">
+                                <span>أضف هذا البوكس إلى السلة</span>
+                                <span class="text-xl">🛒</span>
+                            </button>
 
                             <div class="flex items-center justify-between text-xs text-gray-500 pt-1">
-                                <span class="flex items-center gap-1">
+                                <span class="flex items-center gap-1 text-emerald-600 font-medium">
                                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    متاح للتجهيز الفوري والشحن
+                                    ترسل الصور والرسائل عبر واتساب بعد إتمام الطلب مباشرة
                                 </span>
                                 <button type="button" @click="showBoxPopup = false" class="text-pink-600 hover:underline font-bold">
-                                    تصفح تفاصيل الصفحة ←
+                                    إغلاق النافذة ✕
                                 </button>
                             </div>
                         </div>
@@ -221,16 +218,35 @@
     {{-- Main Page Grid --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
 
-        {{-- Image --}}
-        <div class="relative rounded-3xl overflow-hidden shadow-xl h-96 lg:h-[480px]"
-             style="background: linear-gradient(135deg, oklch(0.965 0.018 350), oklch(0.930 0.038 350))">
-            @if($giftBox->image)
-            <img src="{{ Storage::url($giftBox->image) }}"
-                 alt="{{ $giftBox->name }}"
-                 class="w-full h-full object-cover">
-            @else
-            <div class="w-full h-full flex items-center justify-center text-9xl">🎁</div>
-            @endif
+        {{-- Image & Discover Action --}}
+        <div>
+            <div @click="showBoxPopup = true"
+                 class="relative rounded-3xl overflow-hidden shadow-xl h-96 lg:h-[480px] cursor-pointer group hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.01]"
+                 style="background: linear-gradient(135deg, oklch(0.965 0.018 350), oklch(0.930 0.038 350))"
+                 title="انقر لاكتشاف ما بداخل البوكس">
+                @if($giftBox->image)
+                <img src="{{ Storage::url($giftBox->image) }}"
+                     alt="{{ $giftBox->name }}"
+                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                @else
+                <div class="w-full h-full flex items-center justify-center text-9xl">🎁</div>
+                @endif
+
+                {{-- Hint Overlay on Image Hover --}}
+                <div class="absolute inset-0 bg-stone-900/15 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span class="bg-white/95 text-pink-600 font-bold px-4 py-2.5 rounded-2xl text-sm shadow-xl flex items-center gap-2">
+                        <span>🔍</span> انقر لرؤية محتويات البوكس
+                    </span>
+                </div>
+            </div>
+
+            {{-- Button directly under the image: "اكتشف اللي جواه ↓" --}}
+            <button type="button"
+                    @click="showBoxPopup = true"
+                    class="w-full mt-4 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 hover:from-pink-600 hover:to-rose-600 text-white font-extrabold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2.5 group cursor-pointer">
+                <span>اكتشف اللي جواه ↓</span>
+                <span class="text-xl group-hover:translate-y-1 transition-transform">🎁</span>
+            </button>
         </div>
 
         {{-- Details --}}
@@ -267,15 +283,15 @@
             @endif
 
             {{-- Open Popup CTA Button Banner --}}
-            <div class="mb-6 p-4 rounded-2xl bg-gradient-to-r from-pink-50 to-rose-50 border border-pink-200 flex items-center justify-between gap-4">
-                <div>
-                    <div class="font-bold text-sm text-gray-900">تريد رؤية تفاصيل وكيفية تجهيز البوكس؟</div>
-                    <div class="text-xs text-gray-500">شاهد المحتويات وتعليمات إرسال الصور والرسائل</div>
+            <div @click="showBoxPopup = true" class="mb-6 p-4 sm:p-5 rounded-[24px] border border-gray-900 bg-white flex items-center justify-between gap-4 cursor-pointer hover:shadow-md transition-all group">
+                <div class="text-right">
+                    <div class="font-black text-base sm:text-lg text-gray-900 leading-tight">محتويات البوكس وتعليمات التجهيز</div>
+                    <div class="text-xs sm:text-sm text-gray-500 mt-1">شاهد قائمة الهدايا وما سنطلبه منك لتجهيز الهدية</div>
                 </div>
                 <button type="button"
-                        @click="showBoxPopup = true"
-                        class="btn-primary py-2 px-4 text-xs font-bold shrink-0">
-                    🎁 فتح نافذة التفاصيل
+                        class="px-5 sm:px-6 py-2.5 rounded-full text-white font-extrabold text-xs sm:text-sm shadow-md shrink-0 pointer-events-none group-hover:scale-105 transition-transform"
+                        style="background: linear-gradient(135deg, #a42c67 0%, #b83677 100%);">
+                    اكتشف اللي جواه ↓
                 </button>
             </div>
 
@@ -289,10 +305,9 @@
                             class="px-4 py-3 text-lg font-bold hover:bg-blush-100 transition-colors">+</button>
                 </div>
 
-                <button @click="$store.cart.addGiftBox({id:{{ $giftBox->id }}, name:'{{ addslashes($giftBox->name) }}', price:{{ $giftBox->price }}, image:'{{ $giftBox->image ? Storage::url($giftBox->image) : '' }}'}, quantity); added = true; setTimeout(() => added = false, 2000)"
-                        class="btn-primary flex-1 justify-center py-4 text-base"
-                        :class="added ? 'opacity-80' : ''">
-                    <span x-text="added ? '✓ تمت الإضافة للسلة' : '🛒 أضف إلى السلة'"></span>
+                <button @click="$store.cart.addGiftBox({id:{{ $giftBox->id }}, name:'{{ addslashes($giftBox->name) }}', price:{{ $giftBox->price }}, image:'{{ $giftBox->image ? Storage::url($giftBox->image) : '' }}'}, quantity); window.location.href = '{{ route('cart') }}'"
+                        class="btn-primary flex-1 justify-center py-4 text-base">
+                    <span>🛒 أضف إلى السلة</span>
                 </button>
 
                 <button @click="$store.favorites.toggle({type:'gift_box', id:{{ $giftBox->id }}, name:'{{ addslashes($giftBox->name) }}', image:'{{ $giftBox->image ? Storage::url($giftBox->image) : '' }}'})"

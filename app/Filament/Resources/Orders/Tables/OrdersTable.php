@@ -20,22 +20,29 @@ class OrdersTable
         return $table
             ->columns([
                 TextColumn::make('order_number')
-                    ->label('رقم الطلب')
+                    ->label('رقم الطلب (Order)')
                     ->searchable()
                     ->sortable()
+                    ->weight('bold')
                     ->copyable(),
 
+                TextColumn::make('customer_name')
+                    ->label('العميل (Customer)')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('customer_phone')
-                    ->label('الهاتف')
+                    ->label('الهاتف (Phone)')
                     ->searchable(),
 
-                TextColumn::make('order_type')
-                    ->label('النوع')
-                    ->formatStateUsing(fn ($state) => $state?->label())
-                    ->badge(),
+                TextColumn::make('items.name_snapshot')
+                    ->label('المنتج / البوكس (Product)')
+                    ->badge()
+                    ->color('gray')
+                    ->limitList(2),
 
                 TextColumn::make('status')
-                    ->label('الحالة')
+                    ->label('الحالة (Status)')
                     ->formatStateUsing(fn ($state) => $state?->label())
                     ->badge()
                     ->color(fn ($state) => $state?->color()),

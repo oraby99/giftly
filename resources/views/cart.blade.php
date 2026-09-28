@@ -84,13 +84,17 @@
                     <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
 
                         <div class="flex items-center gap-3.5 flex-1">
-                            <div class="w-16 h-16 rounded-xl bg-gray-100 overflow-hidden shrink-0 flex items-center justify-center border border-gray-200">
+                            <div class="w-16 h-16 rounded-xl bg-gray-100 overflow-hidden shrink-0 flex items-center justify-center border border-gray-200 relative">
                                 <template x-if="item.image">
-                                    <img :src="'/storage/' + item.image" class="w-full h-full object-cover">
+                                    <img :src="typeof formatImageUrl === 'function' ? formatImageUrl(item.image) : (item.image.startsWith('/storage') || item.image.startsWith('http') ? item.image : '/storage/' + item.image)"
+                                         :alt="item.name"
+                                         class="w-full h-full object-cover"
+                                         onerror="this.style.display='none'; if(this.parentElement.querySelector('.cart-fallback')) this.parentElement.querySelector('.cart-fallback').style.display='flex';">
                                 </template>
-                                <template x-if="!item.image">
-                                    <span class="text-2xl">🎁</span>
-                                </template>
+                                <div class="cart-fallback w-full h-full flex items-center justify-center text-2xl text-gray-400"
+                                     :style="item.image ? 'display: none;' : 'display: flex;'">
+                                    🎁
+                                </div>
                             </div>
 
                             <div class="space-y-1">
@@ -282,6 +286,30 @@ function cartCheckout() {
         customerNotes: '',
         isSubmitting: false,
         errorMessage: '',
+
+        init() {
+            // Repair any legacy/malformed image paths in already stored cart items
+            try {
+                const cart = Alpine.store('cart');
+                if (cart && Array.isArray(cart.items)) {
+                    let updated = false;
+                    cart.items.forEach(item => {
+                        if (item.image && typeof window.formatImageUrl === 'function') {
+                            const formatted = window.formatImageUrl(item.image);
+                            if (formatted !== item.image) {
+                                item.image = formatted;
+                                updated = true;
+                            }
+                        }
+                    });
+                    if (updated) {
+                        cart.save();
+                    }
+                }
+            } catch (e) {
+                console.error('Cart image init error:', e);
+            }
+        },
 
         async submitOrder() {
             const items = Alpine.store('cart').items;

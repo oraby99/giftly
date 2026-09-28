@@ -76,6 +76,19 @@
 
         {{-- Products Grid --}}
         <div class="flex-1">
+            {{-- Discover Inside Banner (Image 1 requested by user) --}}
+            <a href="{{ $giftBoxes->first() ? route('gift-boxes.show', $giftBoxes->first()->slug) . '?open=1' : '#' }}"
+               class="mb-6 p-4 sm:p-5 rounded-[24px] border border-gray-900 bg-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs hover:shadow-md transition-all group block">
+                <div class="text-right">
+                    <h3 class="font-black text-base sm:text-lg text-gray-900 leading-tight">محتويات البوكس وتعليمات التجهيز</h3>
+                    <p class="text-xs sm:text-sm text-gray-500 mt-1">شاهد قائمة الهدايا وما سنطلبه منك لتجهيز الهدية</p>
+                </div>
+                <div class="px-5 sm:px-6 py-2.5 rounded-full text-white font-extrabold text-xs sm:text-sm shadow-md shrink-0 group-hover:scale-105 transition-transform"
+                     style="background: linear-gradient(135deg, #a42c67 0%, #b83677 100%);">
+                    <span>اكتشف اللي جواه ↓</span>
+                </div>
+            </a>
+
             @if($giftBoxes->isEmpty())
             <div class="text-center py-20">
                 <div class="text-5xl mb-4">🎁</div>
@@ -87,7 +100,7 @@
                 @foreach($giftBoxes as $box)
                 <div class="product-card group" x-data="{ added: false }">
                     <div class="relative overflow-hidden">
-                        <a href="{{ route('gift-boxes.show', $box->slug) }}">
+                        <a href="{{ route('gift-boxes.show', $box->slug) }}?open=1" class="block">
                             @if($box->image)
                             <img src="{{ Storage::url($box->image) }}"
                                  alt="{{ $box->name }}"
@@ -99,6 +112,10 @@
                                 🎁
                             </div>
                             @endif
+                            <div class="absolute bottom-2.5 inset-x-2.5 bg-white/95 backdrop-blur-xs py-1.5 px-3 rounded-xl text-xs font-bold text-pink-600 flex items-center justify-between shadow-sm group-hover:text-pink-700 transition-colors">
+                                <span>اكتشف اللي جواه ↓</span>
+                                <span>🎁</span>
+                            </div>
                         </a>
                         <button @click="$store.favorites.toggle({type:'gift_box', id:{{ $box->id }}, name:'{{ addslashes($box->name) }}', image:'{{ $box->image ? Storage::url($box->image) : '' }}'})"
                                 class="absolute top-3 left-3 w-9 h-9 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform">
@@ -115,7 +132,7 @@
                                 {{ $box->name }}
                             </h3>
                         </a>
-                        <div class="flex flex-wrap gap-1 mb-3">
+                        <div class="flex flex-wrap gap-1 mb-2">
                             @foreach($box->occasions->take(3) as $occasion)
                             <span class="text-xs px-2 py-0.5 rounded-full font-medium"
                                   style="background: oklch(0.948 0.032 345); color: oklch(0.49 0.155 345)">
@@ -123,12 +140,21 @@
                             </span>
                             @endforeach
                         </div>
+
+                        {{-- Direct Discover Inside link on the card before entering --}}
+                        <a href="{{ route('gift-boxes.show', $box->slug) }}?open=1"
+                           class="mb-3 py-1.5 px-3 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-700 font-bold text-xs border border-pink-200 flex items-center justify-between transition-colors">
+                            <span class="text-gray-700">محتويات البوكس</span>
+                            <span class="text-pink-600 font-extrabold flex items-center gap-1">
+                                <span>اكتشف اللي جواه ↓</span>
+                            </span>
+                        </a>
+
                         <div class="mt-auto flex items-center justify-between">
                             <span class="badge-price">{{ number_format($box->price, 0) }} ج.م</span>
-                            <button @click="$store.cart.addGiftBox({id:{{ $box->id }}, name:'{{ addslashes($box->name) }}', price:{{ $box->price }}, image:'{{ $box->image ? Storage::url($box->image) : '' }}'}); added = true; setTimeout(() => added = false, 2000)"
-                                    class="btn-primary py-2 px-4 text-sm"
-                                    :class="added ? 'opacity-75' : ''">
-                                <span x-text="added ? '✓ أُضيف' : '+ إضافة'"></span>
+                            <button @click="$store.cart.addGiftBox({id:{{ $box->id }}, name:'{{ addslashes($box->name) }}', price:{{ $box->price }}, image:'{{ $box->image ? Storage::url($box->image) : '' }}'}); window.location.href = '{{ route('cart') }}'"
+                                    class="btn-primary py-2 px-4 text-sm">
+                                <span>+ إضافة للسلة</span>
                             </button>
                         </div>
                     </div>

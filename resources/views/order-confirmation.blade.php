@@ -7,42 +7,44 @@
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
     {{-- Confirmation Hero Banner --}}
-    <div class="card p-8 sm:p-12 text-center mb-8 bg-gradient-to-b from-white to-brand-50/30 border-brand-100">
-        <div class="w-20 h-20 mx-auto mb-5 rounded-full flex items-center justify-center text-4xl shadow-md"
-             style="background: linear-gradient(135deg, #25D366, #128C7E); color: white;">
+    <div class="card p-8 sm:p-12 text-center mb-8 bg-gradient-to-b from-white to-pink-50/40 border-pink-200">
+        <div class="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center text-4xl shadow-md text-white"
+             style="background: linear-gradient(135deg, #25D366, #128C7E);">
             ✓
         </div>
 
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 mb-3">
-            ⏳ الحالة: {{ $order->status->label() }} (بانتظار تأكيد واتساب)
-        </span>
-
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2">
-            تم استلام طلبك بنجاح، شكراً لاختيارك جيفتلي!
+        <h1 class="text-2xl sm:text-3xl font-black text-gray-900 mb-2">
+            تم إنشاء طلبك بنجاح ❤️
         </h1>
-        <p class="text-sm text-gray-600 max-w-lg mx-auto mb-6 leading-relaxed">
-            تم تسجيل طلبك في نظامنا. إذا لم يتم فتح محادثة واتساب تلقائياً، يرجى النقر على الزر أدناه لإرسال تفاصيل الطلب والتأكيد معنا مباشرة.
-        </p>
 
-        {{-- Order Number Badge --}}
-        <div class="inline-flex items-center gap-3 bg-white px-5 py-2.5 rounded-xl border border-gray-200 shadow-xs mb-8">
-            <span class="text-xs text-gray-500 font-medium">رقم الطلب:</span>
-            <span class="font-mono font-extrabold text-brand-600 text-lg sm:text-xl tracking-wider select-all" dir="ltr">
-                {{ $order->order_number }}
+        <div class="my-4">
+            <span class="inline-flex items-center gap-2 bg-white px-6 py-2.5 rounded-2xl border-2 border-brand-200 shadow-sm">
+                <span class="text-xs font-bold text-gray-500">رقم الطلب:</span>
+                <span class="font-mono font-black text-brand-600 text-xl sm:text-2xl tracking-wider select-all" dir="ltr">
+                    #{{ $order->order_number }}
+                </span>
             </span>
         </div>
+
+        <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 mb-5">
+            ⏳ الحالة: {{ $order->status->label() }}
+        </span>
+
+        <p class="text-sm text-gray-700 max-w-lg mx-auto mb-6 leading-relaxed">
+            اضغط على الزر أدناه للتواصل معنا عبر واتساب وإرسال <strong>الصور والرسائل</strong> وأي تفاصيل ترغب في تخصيصها للبوكس، وسيتم حفظها مباشرة مع رقم طلبك.
+        </p>
 
         {{-- WhatsApp Continuation Button --}}
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
             <a href="{{ $whatsappUrl }}"
                target="_blank"
-               class="btn-primary text-base py-3.5 px-8 shadow-lg flex items-center justify-center gap-2.5 w-full sm:w-auto"
+               class="btn-primary text-base sm:text-lg py-4 px-8 shadow-xl flex items-center justify-center gap-3 w-full sm:w-auto font-black hover:scale-102 transition-transform"
                style="background: linear-gradient(135deg, #25D366, #128C7E)">
-                <span class="text-xl">💬</span>
-                <span>تأكيد ومتابعة الطلب عبر واتساب</span>
+                <span class="text-2xl">💬</span>
+                <span>تواصل معنا على WhatsApp لإرسال الصور والرسائل</span>
                 <span>←</span>
             </a>
-            <a href="{{ route('home') }}" class="btn-secondary text-sm py-3 px-6 w-full sm:w-auto text-center">
+            <a href="{{ route('home') }}" class="btn-secondary text-sm py-3.5 px-6 w-full sm:w-auto text-center font-bold">
                 العودة للرئيسية
             </a>
         </div>
@@ -164,21 +166,22 @@
 
             {{-- How it works next --}}
             <div class="card p-6 bg-brand-50/40 border-brand-200 text-xs space-y-3">
-                <h3 class="font-bold text-brand-700 text-sm">ماذا يحدث الآن؟</h3>
+                <h3 class="font-bold text-brand-700 text-sm">ماذا يحدث بعد ذلك؟</h3>
                 <div class="space-y-3">
                     <div class="flex items-start gap-2.5">
                         <span class="w-5 h-5 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">1</span>
-                        <p class="text-gray-700">تواصل معنا عبر واتساب لتأكيد موعد التوصيل وموقع الاستلام.</p>
+                        <p class="text-gray-700">تفتح محادثة واتساب وترسل الصور والرسائل مع رقم طلبك (<strong>#{{ $order->order_number }}</strong>).</p>
                     </div>
                     <div class="flex items-start gap-2.5">
                         <span class="w-5 h-5 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">2</span>
-                        <p class="text-gray-700">نقوم بتجهيز الصندوق والمنتجات وتنسيقها بأعلى عناية وجودة.</p>
+                        <p class="text-gray-700">يقوم فريقنا بربط الصور والرسائل بملف طلبك والبدء في تجهيز وتصميم البوكس فوراً.</p>
                     </div>
                     <div class="flex items-start gap-2.5">
                         <span class="w-5 h-5 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">3</span>
-                        <p class="text-gray-700">مندوب التوصيل يسلم الهدية إلى العنوان المطلوب مع الابتسامة!</p>
+                        <p class="text-gray-700">يتم إخطارك بمجرد جاهزية البوكس وتوصيله إلى عنوان المستلم بكل أناقة!</p>
                     </div>
                 </div>
+            </div>
             {{-- Quick Review Form on Order Confirmation --}}
             <div class="card p-6 text-xs space-y-3 bg-white border-brand-200">
                 <h3 class="font-bold text-gray-900 text-sm border-b border-gray-100 pb-2 flex items-center justify-between">

@@ -19,12 +19,12 @@ class OrderService
             $orderType = $this->determineOrderType($items);
 
             $order = Order::create([
-                'order_number' => $this->generateOrderNumber(),
+                'order_number' => Order::generateNextOrderNumber(),
                 'customer_name' => $customerData['customer_name'] ?? null,
                 'customer_phone' => $customerData['customer_phone'] ?? null,
                 'customer_address' => $customerData['customer_address'] ?? null,
                 'customer_notes' => $customerData['customer_notes'] ?? null,
-                'status' => OrderStatus::Pending->value,
+                'status' => OrderStatus::WaitingPhotos->value,
                 'subtotal' => $validatedCart['subtotal'],
                 'packaging_cost' => $validatedCart['packaging_cost'],
                 'delivery_cost' => null,
@@ -52,11 +52,7 @@ class OrderService
 
     private function generateOrderNumber(): string
     {
-        do {
-            $number = 'GFT-'.strtoupper(Str::random(8));
-        } while (Order::where('order_number', $number)->exists());
-
-        return $number;
+        return Order::generateNextOrderNumber();
     }
 
     private function determineOrderType(array $items): OrderType

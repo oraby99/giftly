@@ -73,26 +73,26 @@ class WhatsAppService
         $storeName = $this->settings->storeName();
         $lines = [];
 
-        $lines[] = "🎁 *{$storeName}* - طلب جديد";
+        $lines[] = "أهلاً {$storeName} ❤️";
+        $lines[] = 'قمت بإنشاء الطلب بنجاح عبر الموقع:';
         $lines[] = '';
-        $lines[] = "📋 *رقم الطلب:* {$order->order_number}";
-        $lines[] = "🛍️ *نوع الطلب:* {$order->order_type->label()}";
+        $lines[] = "📋 *رقم الطلب:* #{$order->order_number}";
 
         if (! empty($order->customer_name)) {
-            $lines[] = "👤 *الاسم:* {$order->customer_name}";
+            $lines[] = "👤 *اسم العميل:* {$order->customer_name}";
         }
         if (! empty($order->customer_phone)) {
-            $lines[] = "📱 *الهاتف:* {$order->customer_phone}";
+            $lines[] = "📱 *رقم الهاتف:* {$order->customer_phone}";
         }
         if (! empty($order->customer_address)) {
-            $lines[] = "📍 *العنوان:* {$order->customer_address}";
+            $lines[] = "📍 *عنوان التوصيل:* {$order->customer_address}";
         }
         if (! empty($order->customer_notes)) {
-            $lines[] = "📝 *ملاحظات:* {$order->customer_notes}";
+            $lines[] = "📝 *ملاحظات خاصة:* {$order->customer_notes}";
         }
 
         $lines[] = '';
-        $lines[] = '*تفاصيل الطلب:*';
+        $lines[] = '📦 *تفاصيل محتويات الطلب:*';
 
         foreach ($order->items as $item) {
             $lines[] = '';
@@ -129,10 +129,9 @@ class WhatsAppService
         }
 
         $lines[] = "🏷️ *الإجمالي:* {$order->total} ج.م";
-        $lines[] = '🚚 *تكلفة التوصيل:* تحدد خلال المحادثة';
+        $lines[] = '🚚 *الشحن:* يحدد حسب العنوان والمحافظة';
         $lines[] = '';
-        $lines[] = '---';
-        $lines[] = 'سأقوم بإرسال بيانات التوصيل والتفاصيل الإضافية في هذه المحادثة.';
+        $lines[] = '📸 *جاهز لإرسال الصور والرسائل والتفاصيل الخاصة بالبوكس لمتابعة تجهيز الطلب فوراً.*';
 
         return implode("\n", $lines);
     }
