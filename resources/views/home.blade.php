@@ -79,10 +79,14 @@
                     <div class="text-2xl">🎀</div>
                     <div class="text-xs font-bold text-gray-700 mt-1">تغليف فاخر</div>
                 </div>
-                <div class="absolute -bottom-4 -left-4 bg-white rounded-2xl p-3 shadow-xl border border-blush-100">
-                    <div class="text-2xl">💬</div>
-                    <div class="text-xs font-bold text-gray-700 mt-1">طلب واتساب</div>
-                </div>
+                <a href="https://wa.me/201112126939?text={{ rawurlencode('السلام عليكم، حابب أستفسر بخصوص هدايا جيفتلي 🎁') }}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   title="تواصل معنا عبر واتساب للاستفسار"
+                   class="absolute -bottom-4 -left-4 bg-white rounded-2xl p-3 shadow-xl border border-blush-100 hover:shadow-2xl hover:scale-105 transition-all flex flex-col items-center cursor-pointer group">
+                    <div class="text-2xl group-hover:scale-110 transition-transform">💬</div>
+                    <div class="text-xs font-bold text-gray-700 mt-1 group-hover:text-green-600 transition-colors">استفسار واتساب</div>
+                </a>
             </div>
         </div>
     </div>

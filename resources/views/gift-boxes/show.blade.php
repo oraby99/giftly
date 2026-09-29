@@ -100,10 +100,11 @@
                                         <p class="font-bold text-pink-700 mb-1">أهلاً بيك ❤️</p>
                                         <p>بوكس «{{ $boxDisplayName }}» بيتعمل مخصوص للشخص اللي هتهديهوله، وبيضم صوركم ورسائلكم بطريقة شخصية جدًا.</p>
                                         <div class="mt-2.5 flex items-center justify-between">
-                                            <span class="text-xs text-gray-500 font-bold">تحب تشوف محتويات البوكس والأسعار؟ 🎁</span>
+                                            <span x-show="!showContents" class="text-xs text-gray-500 font-bold">تحب تشوف محتويات البوكس والأسعار؟ 🎁</span>
                                             <button type="button"
                                                     @click="showContents = !showContents"
-                                                    class="text-xs bg-white text-pink-600 border border-pink-300 font-bold px-3 py-1.5 rounded-lg shadow-sm hover:bg-pink-600 hover:text-white transition-all flex items-center gap-1">
+                                                    class="text-xs bg-white text-pink-600 border border-pink-300 font-bold px-3 py-1.5 rounded-lg shadow-sm hover:bg-pink-600 hover:text-white transition-all flex items-center gap-1"
+                                                    :class="showContents ? 'mr-auto' : ''">
                                                 <span x-text="showContents ? 'إخفاء' : 'أيوه، اعرضلي'"></span>
                                                 <span x-text="showContents ? '▲' : '▼'"></span>
                                             </button>
@@ -315,17 +316,6 @@
                     <span x-text="$store.favorites.isFavorite('gift_box', {{ $giftBox->id }}) ? '❤️' : '🤍'"></span>
                 </button>
             </div>
-
-            {{-- Direct WhatsApp Button --}}
-            <a href="{{ $whatsappUrl }}"
-               target="_blank"
-               style="background-color: #25D366 !important; color: #ffffff !important;"
-               class="w-full text-white font-bold py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2.5 shadow-md hover:shadow-lg hover:opacity-95 transition-all duration-200 text-base mb-3">
-                <svg width="22" height="22" viewBox="0 0 24 24" style="width: 22px !important; height: 22px !important; min-width: 22px !important; max-width: 22px !important; fill: #ffffff !important; display: inline-block;">
-                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.275.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.164.577 4.246 1.636 6.071l-1.636 5.929 6.071-1.636c1.782.977 3.82 1.547 5.929 1.547 6.627 0 12-5.373 12-12s-5.373-12-12-12z"/>
-                </svg>
-                <span style="color: #ffffff !important;">الطلب المباشر عبر واتساب</span>
-            </a>
 
             <a href="{{ route('cart') }}" class="btn-secondary w-full justify-center py-3 text-sm">
                 الانتقال إلى سلة المشتريات ←

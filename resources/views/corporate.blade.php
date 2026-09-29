@@ -82,33 +82,83 @@
         </div>
     </div>
 
-    {{-- Example Corporate Boxes --}}
-    @if($exampleBoxes->isNotEmpty())
+    {{-- Corporate Boxes Section --}}
+    @if($corporateBoxes->isNotEmpty())
     <div class="mb-16">
-        <div class="flex items-center justify-between mb-8">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
             <div>
-                <h2 class="text-xl sm:text-2xl font-extrabold text-gray-900">أفكار ونماذج صناديق جاهزة</h2>
-                <p class="text-xs sm:text-sm text-gray-500 mt-1">نماذج يمكنك طلبها كما هي أو تعديلها بالكامل حسب رغبتك</p>
+                <span class="text-xs font-extrabold text-brand-600 px-3 py-1 rounded-full bg-brand-50 border border-brand-100 inline-block mb-2">
+                    🏢 تشكيلة هدايا الشركات والمؤسسات
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900">نماذج وباقات صناديق الشركات</h2>
+                <p class="text-xs sm:text-sm text-gray-500 mt-1">باقات متكاملة جاهزة للتخصيص بطباعة شعار وهوية شركتك، أو نصمم لك باقة حصرية حسب ميزانيتك</p>
             </div>
-            <a href="{{ route('gift-boxes.index') }}" class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1">
-                <span>تصفح الكل</span>
-                <span>←</span>
+            <a href="https://wa.me/201112126939?text={{ rawurlencode('مرحباً، أرغب في الاستفسار عن تفصيل صناديق هدايا خاصة بشركتنا 🏢') }}"
+               target="_blank"
+               class="btn-secondary text-xs sm:text-sm py-2.5 px-4 shrink-0">
+                <span>💬 تفصيل صندوق خاص</span>
             </a>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            @foreach($exampleBoxes as $box)
-                <a href="{{ route('gift-boxes.show', $box->slug) }}" class="card p-3 group hover:border-brand-300 transition-all text-center">
-                    <div class="aspect-square rounded-xl bg-gray-100 overflow-hidden mb-2 relative">
-                        @if($box->image)
-                            <img src="{{ asset('storage/' . $box->image) }}" alt="{{ $box->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-                        @else
-                            <div class="w-full h-full flex items-center justify-center text-2xl">🎁</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            @foreach($corporateBoxes as $box)
+                <div class="card p-5 group hover:border-brand-300 hover:shadow-lg transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="aspect-4/3 rounded-2xl bg-gradient-to-br from-gray-50 to-pink-50/40 overflow-hidden mb-4 relative border border-gray-100 flex items-center justify-center">
+                            @if($box->image)
+                                <img src="{{ Storage::url($box->image) }}" alt="{{ $box->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            @else
+                                <div class="w-full h-full flex flex-col items-center justify-center text-gray-400 gap-1">
+                                    <span class="text-5xl">🎁</span>
+                                    <span class="text-[11px] font-bold text-gray-400">جيفتلي بزنس</span>
+                                </div>
+                            @endif
+
+                            @if($box->min_quantity)
+                            <span class="absolute top-2.5 right-2.5 text-[10px] font-bold text-gray-700 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-full shadow-xs border border-gray-100">
+                                الحد الأدنى: {{ $box->min_quantity }} علبة
+                            </span>
+                            @endif
+                        </div>
+
+                        <h3 class="font-extrabold text-sm sm:text-base text-gray-900 mb-1.5 leading-snug">{{ $box->name }}</h3>
+                        
+                        @if($box->description)
+                        <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed mb-3">{{ $box->description }}</p>
+                        @endif
+
+                        @if(!empty($box->features) && is_array($box->features))
+                        <div class="mb-4 pt-2 border-t border-gray-100 space-y-1">
+                            @foreach(array_slice($box->features, 0, 3) as $feat)
+                            <div class="flex items-center gap-1.5 text-[11px] text-gray-600">
+                                <span class="text-brand-500 font-bold">✓</span>
+                                <span class="line-clamp-1">{{ is_array($feat) ? ($feat['item'] ?? '') : $feat }}</span>
+                            </div>
+                            @endforeach
+                        </div>
                         @endif
                     </div>
-                    <h4 class="font-bold text-xs text-gray-800 line-clamp-1 mb-1">{{ $box->name }}</h4>
-                    <span class="text-xs font-bold text-brand-600">{{ number_format($box->price, 0) }} ج.م</span>
-                </a>
+
+                    <div class="pt-3 border-t border-gray-100 mt-auto">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-[11px] text-gray-400 font-medium">السعر التقديري:</span>
+                            @if($box->price)
+                            <span class="font-black text-sm text-brand-600 font-mono">
+                                يبدأ من {{ number_format($box->price, 0) }} ج.م
+                            </span>
+                            @else
+                            <span class="text-xs font-bold text-gray-600">حسب الكمية</span>
+                            @endif
+                        </div>
+
+                        <a href="https://wa.me/201112126939?text={{ rawurlencode('مرحباً، أود الاستفسار وطلب عرض أسعار بخصوص: ' . $box->name . ' للشركات 🏢') }}"
+                           target="_blank"
+                           class="w-full btn-primary py-2 px-3 text-xs justify-center font-bold flex items-center gap-1.5 shadow-sm hover:shadow transition-all">
+                            <span>طلب عرض سعر</span>
+                            <span>←</span>
+                        </a>
+                    </div>
+                </div>
             @endforeach
         </div>
     </div>

@@ -4,19 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CompanyInquiryRequest;
 use App\Models\CompanyInquiry;
-use App\Models\GiftBox;
+use App\Models\CorporateGiftBox;
 
 class CorporateController extends Controller
 {
     public function index()
     {
-        $exampleBoxes = GiftBox::active()
-            ->select(['id', 'name', 'slug', 'price', 'image'])
+        $corporateBoxes = CorporateGiftBox::active()
             ->orderBy('sort_order')
-            ->limit(6)
             ->get();
 
-        return view('corporate', compact('exampleBoxes'));
+        return view('corporate', compact('corporateBoxes'));
     }
 
     public function store(CompanyInquiryRequest $request)

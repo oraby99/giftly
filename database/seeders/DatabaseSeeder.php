@@ -828,5 +828,8 @@ class DatabaseSeeder extends Seeder
         foreach ($inquiriesData as $inq) {
             CompanyInquiry::updateOrCreate(['phone' => $inq['phone']], $inq);
         }
+
+        // 13. Corporate Gift Boxes
+        $this->call(CorporateGiftBoxSeeder::class);
     }
 }
